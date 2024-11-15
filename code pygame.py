@@ -20,7 +20,6 @@ bg_menu = pygame.image.load('C:/Users/loicm/Downloads/bg_menu.png')
 fg_jeu = pygame.image.load('C:/Users/loicm/Downloads/front_game.png')
 button_valid = pygame.image.load('C:/Users/loicm/Downloads/hud_valid.png')
 rabbit = pygame.image.load('C:/Users/loicm/Downloads/rabbit.png')
-print(type(rabbit))
 boar = pygame.image.load('C:/Users/loicm/Downloads/boar.png')
 hub_animal_select = pygame.image.load('C:/Users/loicm/Downloads/hud_animals.png')
 
