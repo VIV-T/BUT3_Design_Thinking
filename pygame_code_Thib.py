@@ -5,7 +5,7 @@ import os
 
 # creation du project_path & du sprite_path
 project_path = os.getcwd()
-sprites_path = project_path + "\\sprite"
+sprite_directory_path = project_path + "\\sprite"
 
 # Initialisation de Pygame
 pygame.init()
@@ -13,24 +13,24 @@ pygame.mixer.init()
 screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
 pygame.display.set_caption("escape the jungle")
-main_theme = sprites_path+'\\main_theme.mp3'
+main_theme = sprite_directory_path+'\\main_theme.mp3'
 pygame.mixer.music.load(main_theme)
 pygame.mixer.music.play()
 
 # Chargement des images
-icon = pygame.image.load(sprites_path+'\\icon.png')
-button_play = pygame.image.load(sprites_path+'\\PlayBtn.png')
-bg_jeu = pygame.image.load(sprites_path+'\\background_0.png')
-bg_menu = pygame.image.load(sprites_path+'\\bg_menu.png')
-fg_jeu = pygame.image.load(sprites_path+'\\front_game.png')
-hub_animal_select = pygame.image.load(sprites_path+'\\hud_animals.png')
-button_valid = pygame.image.load(sprites_path+'\\hud_valid.png')
+icon = pygame.image.load(sprite_directory_path+'\\icon.png')
+button_play = pygame.image.load(sprite_directory_path+'\\PlayBtn.png')
+bg_jeu = pygame.image.load(sprite_directory_path+'\\background_game.png')
+bg_menu = pygame.image.load(sprite_directory_path+'\\bg_menu.png')
+fg_jeu = pygame.image.load(sprite_directory_path+'\\front_game.png')
+hub_animal_select = pygame.image.load(sprite_directory_path+'\\hud_animals.png')
+button_valid = pygame.image.load(sprite_directory_path+'\\hud_valid.png')
 
 # Creation des personnages/animaux
-pikachu = Personnage(1,"pikachu")
-poussifeu = Personnage(2,"poussifeu")
-lokhlass = Personnage(5,"lokhlass")
-ronflex = Personnage(7,"ronflex")
+pikachu = Personnage(1,"pikachu", sprite_directory_path)
+poussifeu = Personnage(2,"poussifeu", sprite_directory_path)
+lokhlass = Personnage(5,"lokhlass", sprite_directory_path)
+ronflex = Personnage(7,"ronflex", sprite_directory_path)
 
 
 
@@ -84,7 +84,7 @@ def game_loop():
         screen.blit(hub_animal_select, hub_animal_rect)
         for poke in dico_choix_animaux.values():
             screen.blit(poke.get_sprite(), poke.get_rect())
- 
+
 
         pygame.display.flip()
         clock.tick(60)

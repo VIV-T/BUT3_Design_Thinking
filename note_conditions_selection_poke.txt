@@ -1,0 +1,9 @@
+if poke.get_rect().collidepoint(event.pos) :
+	# verifions que le poke est selectionné
+	if poke.get_selected == 0 : 
+		# verifier que moins de deux poke sont select
+		if len(liste_selection) < 2 :
+			poke.select()
+	# deselection quand le pokje est click	
+	else : 
+		poke.unselect()
