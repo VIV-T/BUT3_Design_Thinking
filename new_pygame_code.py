@@ -1,6 +1,11 @@
 import pygame
 import logique
-import personnages
+from personnages import Personnage, Torche
+import os
+
+# creation du project_path & du sprite_path
+project_path = os.getcwd()
+sprites_path = project_path + "\\sprite"
 
 # Initialisation de Pygame
 pygame.init()
@@ -8,20 +13,26 @@ pygame.mixer.init()
 screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
 pygame.display.set_caption("escape the jungle")
-main_theme = 'C:/Users/loicm/Downloads/main_theme.mp3'
+main_theme = sprites_path+'\\main_theme.mp3'
 pygame.mixer.music.load(main_theme)
 pygame.mixer.music.play()
 
 # Chargement des images
-"""icon = pygame.image.load('C:/Users/loicm/Downloads/icon.png')
-button_play = pygame.image.load('C:/Users/loicm/Downloads/PlayBtn.png')
-bg_jeu = pygame.image.load('C:/Users/loicm/Downloads/background_0.png')
-bg_menu = pygame.image.load('C:/Users/loicm/Downloads/bg_menu.png')
-fg_jeu = pygame.image.load('C:/Users/loicm/Downloads/front_game.png')
-button_valid = pygame.image.load('C:/Users/loicm/Downloads/hud_valid.png')
-rabbit = pygame.image.load('C:/Users/loicm/Downloads/rabbit.png')
-boar = pygame.image.load('C:/Users/loicm/Downloads/boar.png')
-hub_animal_select = pygame.image.load('C:/Users/loicm/Downloads/hud_animals.png')"""
+icon = pygame.image.load(sprites_path+'\\icon.png')
+button_play = pygame.image.load(sprites_path+'\\PlayBtn.png')
+bg_jeu = pygame.image.load(sprites_path+'\\background_0.png')
+bg_menu = pygame.image.load(sprites_path+'\\bg_menu.png')
+fg_jeu = pygame.image.load(sprites_path+'\\front_game.png')
+hub_animal_select = pygame.image.load(sprites_path+'\\hud_animals.png')
+button_valid = pygame.image.load(sprites_path+'\\hud_valid.png')
+
+# Creation des personnages/animaux
+pikachu = Personnage(1,"pikachu")
+poussifeu = Personnage(2,"poussifeu")
+lokhlass = Personnage(5,"lokhlass")
+ronflex = Personnage(7,"ronflex")
+
+
 
 # changement icon app
 pygame.display.set_icon(icon)
@@ -33,26 +44,18 @@ button_play = pygame.transform.scale(button_play, (200, 100))
 button_valid = pygame.transform.scale(button_valid, (75,75))
 hub_animal_select = pygame.transform.scale(hub_animal_select, (250,100))
 fg_jeu = pygame.transform.scale(fg_jeu, (1280, 720))
-rabbit = pygame.transform.scale(rabbit, (50,50))
-boar = pygame.transform.scale(boar, (50,100))
 
 # Position
 hub_animal_rect = hub_animal_select.get_rect(center=(130,60))
 play_rect = button_play.get_rect(center=(640, 640))
 valid_rect = button_valid.get_rect(center=(1200, 640))
 fg_jeu_rect = fg_jeu.get_rect(center=(640, 360))
-rabbit_rect = rabbit.get_rect(center=(60,620))
-boar_rect = boar.get_rect(center=(150,620))
 
 running = True
 menu = True
 
 # initialisation perso
-guepard = Personnage(1,"guepard", 0)
-lapin = Personnage(2,"lapin", 0)
-chevre = Personnage(5,"chevre", 0)
-escargot = Personnage(7,"escargot", 0)
-dico_choix_animaux : dict[str : Personnage] = {"guepard" : guepard, "lapin" : lapin, "chevre" : chevre, "escargot" : escargot}
+dico_choix_animaux : dict[str : Personnage] = {"pikachu" : pikachu, "poussifeu" : poussifeu, "lokhlass" : lokhlass, "ronflex" : ronflex}
 
 torche = Torche(0)
 temps_tot = 0
@@ -69,16 +72,19 @@ def game_loop():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if valid_rect.collidepoint(event.pos):  # Vérifie si valider est cliqué
                     print("test")
-                if rabbit_rect.collidepoint(event.pos):
-                    print("lapin")
+                for poke in dico_choix_animaux.values() :
+                    if poke.get_rect().collidepoint(event.pos) :
+                        print(poke.get_name())
+
 
         # Affichage des éléments de jeu
         screen.blit(bg_jeu, (0, 0))  # Fond de jeu
         screen.blit(fg_jeu, fg_jeu_rect.topleft)  # Avant-plan positionné
         screen.blit(button_valid, valid_rect.topleft)  # Affiche le boutton valider
         screen.blit(hub_animal_select, hub_animal_rect)
-        screen.blit(rabbit, rabbit_rect)
-        screen.blit(boar, boar_rect)
+        for poke in dico_choix_animaux.values():
+            screen.blit(poke.get_sprite(), poke.get_rect())
+ 
 
         pygame.display.flip()
         clock.tick(60)

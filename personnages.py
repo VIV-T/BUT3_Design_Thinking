@@ -9,6 +9,7 @@ class Personnage() :
         self.selected = 0
         self.sprite = pygame.image.load('C:/Users/loicm/Downloads/'+self.name+'.png')
         self.sprite = pygame.transform.scale(self.sprite, (50,50))
+        self.rect = self.sprite.get_rect(center=(60,620))
 
     def get_name(self):
         return self.name
@@ -21,6 +22,11 @@ class Personnage() :
 
     def get_selected(self):
         return self.selected
+
+    def get_sprite(self):
+        return self.sprite
+    def get_rect(self):
+        return self.rect
 
     def set_nom(self, new_name):
         self.name = new_name
