@@ -2,14 +2,14 @@
 import pygame
 
 class Personnage() :
-    def __init__(self, number, name, sprite_directory_path, position = 0):
+    def __init__(self, number, name, sprite_directory_path, position = 0, x = 0, y = 0):
         self.name = name
         self.number = number
         self.position = position
         self.selected = 0
         self.sprite = pygame.image.load(sprite_directory_path+'\\'+self.name+'.png')
         self.sprite = pygame.transform.scale(self.sprite, (50,50))
-        self.rect = self.sprite.get_rect(center=(60,620))
+        self.rect = self.sprite.get_rect(center=(x,y))
 
     def get_name(self):
         return self.name

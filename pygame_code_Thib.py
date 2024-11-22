@@ -6,6 +6,8 @@ import os
 # creation du project_path & du sprite_path
 project_path = os.getcwd()
 sprite_directory_path = project_path + "\\sprite"
+police = sprite_directory_path + "\\8-BIT WONDER.TTF"
+font_select = pygame.font.Font(police, 40)
 
 # Initialisation de Pygame
 pygame.init()
@@ -27,11 +29,10 @@ hub_animal_select = pygame.image.load(sprite_directory_path+'\\hud_animals.png')
 button_valid = pygame.image.load(sprite_directory_path+'\\hud_valid.png')
 
 # Creation des personnages/animaux
-pikachu = Personnage(1,"pikachu", sprite_directory_path)
-poussifeu = Personnage(2,"poussifeu", sprite_directory_path)
-lokhlass = Personnage(5,"lokhlass", sprite_directory_path)
-ronflex = Personnage(7,"ronflex", sprite_directory_path)
-
+pikachu = Personnage(1,"pikachu", sprite_directory_path, 0, 60, 620)
+poussifeu = Personnage(2,"poussifeu", sprite_directory_path, 0, 100, 620)
+lokhlass = Personnage(5,"lokhlass", sprite_directory_path, 0,  140, 620)
+ronflex = Personnage(7,"ronflex", sprite_directory_path, 0, 180, 620)
 
 
 # changement icon app
@@ -74,6 +75,17 @@ def game_loop():
                     print("test")
                 for poke in dico_choix_animaux.values() :
                     if poke.get_rect().collidepoint(event.pos) :
+                        if poke.get_selected() == 0:
+                            if len(liste_personnages_selected) < 2:
+                                text_surface = font_select.render(poke.get_name(), True)
+
+                                text_rect = text_surface.get_rect(center=(400, 300))
+                            else:
+                                print("trop de selection")
+                        else:
+                            poke.unselect(liste_personnages_selected)
+
+                        print(liste_personnages_selected)
                         print(poke.get_name())
 
 
