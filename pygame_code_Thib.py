@@ -7,11 +7,13 @@ import os
 project_path = os.getcwd()
 sprite_directory_path = project_path + "\\sprite"
 police = sprite_directory_path + "\\8-BIT WONDER.TTF"
-font_select = pygame.font.Font(police, 40)
+pygame.font.init()
+font_select = pygame.font.SysFont("Arial", 40)
 
 # Initialisation de Pygame
 pygame.init()
 pygame.mixer.init()
+
 screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
 pygame.display.set_caption("escape the jungle")
@@ -72,14 +74,14 @@ def game_loop():
                 exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if valid_rect.collidepoint(event.pos):  # Vérifie si valider est cliqué
-                    print("test")
+                    if len(liste_personnages_selected) > 0:
+                        print("valide")
+
                 for poke in dico_choix_animaux.values() :
                     if poke.get_rect().collidepoint(event.pos) :
                         if poke.get_selected() == 0:
                             if len(liste_personnages_selected) < 2:
-                                text_surface = font_select.render(poke.get_name(), True)
-
-                                text_rect = text_surface.get_rect(center=(400, 300))
+                                poke.select(liste_personnages_selected)
                             else:
                                 print("trop de selection")
                         else:
