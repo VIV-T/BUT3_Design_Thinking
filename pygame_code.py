@@ -9,9 +9,7 @@ from copy import deepcopy
 # creation du project_path & du sprite_path
 project_path = os.getcwd()
 sprite_directory_path = project_path + "\\sprite"
-police = sprite_directory_path + "\\8-BIT WONDER.TTF"
 pygame.font.init()
-font_select = pygame.font.SysFont("Arial", 40)
 
 # Initialisation de Pygame
 pygame.init()
@@ -20,9 +18,9 @@ pygame.mixer.init()
 screen = pygame.display.set_mode((1280, 720))
 clock = pygame.time.Clock()
 pygame.display.set_caption("escape the jungle")
-main_theme = sprite_directory_path+'\\main_theme.mp3'
-pygame.mixer.music.load(main_theme)
-pygame.mixer.music.play()
+#main_theme = sprite_directory_path+'\\main_theme.mp3'
+#pygame.mixer.music.load(main_theme)
+#pygame.mixer.music.play()
 
 # Chargement des images
 icon = pygame.image.load(sprite_directory_path+'\\icon.png')
@@ -32,6 +30,9 @@ bg_menu = pygame.image.load(sprite_directory_path+'\\bg_menu.png')
 fg_jeu = pygame.image.load(sprite_directory_path+'\\front_game.png')
 hub_animal_select = pygame.image.load(sprite_directory_path+'\\hud_animals.png')
 button_valid = pygame.image.load(sprite_directory_path+'\\hud_valid.png')
+
+font = pygame.font.Font(None, 240)
+text = font.render("Texte",1,(255,255,255))
 
 # Creation des personnages/animaux
 pikachu = Personnage(1,"pikachu", sprite_directory_path, 0, x=380, y=630, taille=35)
@@ -100,6 +101,7 @@ def game_loop():
 
                         for moving_poke in list_moving_poke :
                             moving_poke.unselect(liste_personnages_selected)
+                            print("hehe :" + str(not torche.get_position()))
                             moving_poke.change_position()
 
 
@@ -107,9 +109,13 @@ def game_loop():
                     if poke.get_rect().collidepoint(event.pos) :
                         if poke.get_selected() == 0:
                             if len(liste_personnages_selected) < 2:
-                                poke.select(liste_personnages_selected)
-                                poke.set_sprite()
+                                if torche.get_position() == poke.get_position():
+                                    poke.select(liste_personnages_selected)
+                                    poke.set_sprite()
+                                else:
+                                    print("la torche n'est pas de ce coté !")
                             else:
+                                screen.blit(text, (100, 100))
                                 print("Le pokémon ne peut pas être selectionné, il a déjà deux pokémons sélectionnés !")
                         else:
                             poke.unselect(liste_personnages_selected)
