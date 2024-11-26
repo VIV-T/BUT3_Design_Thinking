@@ -11,7 +11,7 @@ class Personnage() :
         self.taille = taille
         self.x = x
         self.x_0 = x
-        self.x_1 = x+770
+        self.x_1 = x+840
         self.y = y
         self.sprite_directory_path = sprite_directory_path
         self.sprite = pygame.image.load(self.sprite_directory_path+'\\'+self.name+'_0.png')
@@ -85,7 +85,7 @@ class Personnage() :
     def move(self, max_move_time : int):
         # deplacement sur l'axe des abcsisse des personnages
         # 770 pck déjà graphiquement, c'est bien, en plus c'est diivisible par 1,2,5 et 7.
-        pas = 770 / max_move_time
+        pas = 840 / max_move_time
         if self.position == 0 :
             self.x += pas
             self.rect = self.sprite.get_rect(center=(self.x,self.y))
@@ -102,11 +102,42 @@ class Personnage() :
 
 
 class Torche() :
-    def __init__(self, position = 0):
+    def __init__(self,sprite_directory_path, x, y, position = 0):
         self.position = position
+        self.x = x
+        self.x_0 = x
+        self.x_1 = x + 490
+        self.y = y
+        self.sprite_directory_path = sprite_directory_path
+        self.sprite = pygame.image.load(self.sprite_directory_path+'\\torch.png')
+        self.sprite = pygame.transform.scale(self.sprite, (31, 62))
+        self.rect = self.sprite.get_rect(center=(self.x, self.y))
 
     def get_position(self):
         return self.position
 
     def set_position(self, new_position):
         self.position = new_position
+
+    def get_sprite(self):
+        return self.sprite
+
+    def get_rect(self):
+        return self.rect
+
+    def move(self, max_move_time : int):
+        # deplacement sur l'axe des abcsisse des personnages
+        # 770 pck déjà graphiquement, c'est bien, en plus c'est diivisible par 1,2,5 et 7.
+        pas = 490 / max_move_time
+        if self.position == 0 :
+            self.x += pas
+            self.rect = self.sprite.get_rect(center=(self.x,self.y))
+            if self.x != self.x_1 :
+                return False
+            return True
+        elif self.position == 1 :
+            self.x -= pas
+            self.rect = self.sprite.get_rect(center=(self.x,self.y))
+            if self.x != self.x_0 :
+                return False
+            return True
