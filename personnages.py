@@ -2,13 +2,15 @@
 import pygame
 
 class Personnage() :
-    def __init__(self, number, name, sprite_directory_path, position = 0, x = 0, y = 0):
+    def __init__(self, number, name, sprite_directory_path, position = 0, x = 0, y = 0, taille= 50):
         self.name = name
         self.number = number
         self.position = position
         self.selected = 0
-        self.sprite = pygame.image.load(sprite_directory_path+'\\'+self.name+'.png')
-        self.sprite = pygame.transform.scale(self.sprite, (50,50))
+        self.taille = taille
+        self.sprite_directory_path = sprite_directory_path
+        self.sprite = pygame.image.load(self.sprite_directory_path+'\\'+self.name+'_0.png')
+        self.sprite = pygame.transform.scale(self.sprite, (self.taille,self.taille))
         self.rect = self.sprite.get_rect(center=(x,y))
 
     def get_name(self):
@@ -36,6 +38,20 @@ class Personnage() :
 
     def set_position(self, new_position):
         self.position = new_position
+
+    def set_sprite(self, selected : bool):
+        if selected == False :
+            if self.position == 0:
+                sprite_extension = '_0.png'
+            else :
+                sprite_extension = '_1.png'
+        else :
+            if self.position == 0:
+                sprite_extension = '_0_selected.png'
+            else :
+                sprite_extension = '_1_selected.png'
+        self.sprite = pygame.image.load(self.sprite_directory_path + '\\' + self.name + sprite_extension)
+        self.sprite = pygame.transform.scale(self.sprite, (self.taille, self.taille))
 
     def __str__(self):
         return  self.get_name()

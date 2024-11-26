@@ -31,10 +31,10 @@ hub_animal_select = pygame.image.load(sprite_directory_path+'\\hud_animals.png')
 button_valid = pygame.image.load(sprite_directory_path+'\\hud_valid.png')
 
 # Creation des personnages/animaux
-pikachu = Personnage(1,"pikachu", sprite_directory_path, 0, 60, 620)
-poussifeu = Personnage(2,"poussifeu", sprite_directory_path, 0, 100, 620)
-lokhlass = Personnage(5,"lokhlass", sprite_directory_path, 0,  140, 620)
-ronflex = Personnage(7,"ronflex", sprite_directory_path, 0, 180, 620)
+poussifeu = Personnage(2,"poussifeu", sprite_directory_path, 0, x=380, y=620, taille=50)
+pikachu = Personnage(1,"pikachu", sprite_directory_path, 0, x=340, y=620, taille=50)
+lokhlass = Personnage(5,"lokhlass", sprite_directory_path, 0, x=280, y=620, taille=100)
+ronflex = Personnage(7,"ronflex", sprite_directory_path, 0, x=180, y=595, taille=150)
 
 
 # changement icon app
@@ -73,7 +73,7 @@ def game_loop():
                 pygame.quit()
                 exit()
             elif event.type == pygame.MOUSEBUTTONDOWN:
-                if valid_rect.collidepoint(event.pos):  # Vérifie si valider est cliqué
+                if valid_rect.collidepoint(event.pos):  # Vérifie si le bouton "valider" est cliqué
                     if len(liste_personnages_selected) > 0:
                         print("valide")
 
@@ -82,13 +82,16 @@ def game_loop():
                         if poke.get_selected() == 0:
                             if len(liste_personnages_selected) < 2:
                                 poke.select(liste_personnages_selected)
+                                poke.set_sprite(selected=True)
                             else:
-                                print("trop de selection")
+                                print("Le pokémon ne peut pas être selectionné, il a déjà deux pokémons sélectionnés !")
                         else:
                             poke.unselect(liste_personnages_selected)
+                            poke.set_sprite(selected=False)
 
-                        print(liste_personnages_selected)
-                        print(poke.get_name())
+                        # Affichage des poké selected
+                        for poke_selected in liste_personnages_selected :
+                            print(poke_selected.get_name())
 
 
         # Affichage des éléments de jeu
