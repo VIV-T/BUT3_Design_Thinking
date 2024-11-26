@@ -4,7 +4,8 @@ import pygame
 import logique
 from personnages import Personnage, Torche
 import os
-from copy import deepcopy
+# utilse pour les regex
+from re import sub, match
 
 # creation du project_path & du sprite_path
 project_path = os.getcwd()
@@ -34,7 +35,7 @@ prof_chen = pygame.image.load(sprite_directory_path+'\\prof_chen_1.png')
 bubble_text = pygame.image.load(sprite_directory_path+'\\bubble_text.png')
 
 font = pygame.font.Font(None, 15)
-text = font.render("il a déjà 2 pokémons sélectionnés !",1,(0,0,0))
+
 
 # Creation des personnages/animaux
 pikachu = Personnage(1,"pikachu", sprite_directory_path, 0, x=360, y=630, taille=35)
@@ -59,7 +60,6 @@ hub_animal_rect = hub_animal_select.get_rect(center=(130,60))
 play_rect = button_play.get_rect(center=(640, 640))
 valid_rect = button_valid.get_rect(center=(1200, 50))
 fg_jeu_rect = fg_jeu.get_rect(center=(640, 360))
-text_rect = text.get_rect(center=(1150,510))
 prof_chen_rect = prof_chen.get_rect(center=(1260,600))
 bubble_text_rect = bubble_text.get_rect(center=(1150,520))
 
@@ -76,8 +76,19 @@ liste_personnages_selected: list[Personnage] = []
 def game_loop():
     # boucle de la partie
     playing = True
-    bool_text = False
+    current_crossing_time = 0
+
+    # Initialisation chaine de caractère affichées à l'écran
+    # Affichage des poké_selected & time
+    poke_text = ""
+    poke_lines = poke_text.splitlines()
+    poke_selection_change = True
+    # Répliques du prof Chen
+    bool_prof_chen_text = True
     time_start_affichage_text = 0
+    prof_chen_text = "Commençons le jeu..."
+    prof_chen_lines = prof_chen_text.splitlines()
+
     while playing:
         screen.blit(bg_jeu, (0, 0))  # Fond de jeu
         screen.blit(fg_jeu, fg_jeu_rect.topleft)  # Avant-plan positionné
@@ -85,11 +96,39 @@ def game_loop():
         screen.blit(hub_animal_select, hub_animal_rect)
         screen.blit(torche.get_sprite(), torche.get_rect())
         screen.blit(prof_chen, prof_chen_rect)
-        if bool_text == True and pygame.time.get_ticks() < time_start_affichage_text +4000:
+
+        # Affichage texte : poke_selected & temps de parcours
+        # definition de la coord y de la premiere ligne
+        y = 60
+        if poke_selection_change :
+            try :
+                poke_text += f"Current crossing time : {current_crossing_time} (+{max_move_time})"
+            except :
+                poke_text += f"Current crossing time : {current_crossing_time}"
+            poke_selection_change = False
+
+        poke_lines = poke_text.splitlines()
+        for poke_line in poke_lines:
+            printed_line = font.render(poke_line, 1, (0, 0, 0))
+            printed_line_rect = printed_line.get_rect(center=(150, y))
+            screen.blit(printed_line, printed_line_rect)
+            y += 10
+
+        # Affichage texte professeur Chen
+        if bool_prof_chen_text == True and pygame.time.get_ticks() < time_start_affichage_text +4000:
+            # Affichage de la bulle
             screen.blit(bubble_text, bubble_text_rect)
-            screen.blit(text, text_rect)
+            # Affichage du texte de la bulle
+            # set le y de la première ligne
+            y = 510
+            prof_chen_lines = prof_chen_text.splitlines()
+            for prof_chen_line in prof_chen_lines :
+                printed_line = font.render(prof_chen_line, 1, (0, 0, 0))
+                printed_line_rect = printed_line.get_rect(center=(1150, y))
+                screen.blit(printed_line, printed_line_rect)
+                y += 10
         else:
-            bool_text = False
+            bool_prof_chen_text = False
 
 
         for poke in dico_choix_animaux.values():
@@ -102,7 +141,6 @@ def game_loop():
             elif event.type == pygame.MOUSEBUTTONDOWN:
                 if valid_rect.collidepoint(event.pos):  # Vérifie si le bouton "valider" est cliqué
                     if len(liste_personnages_selected) > 0:
-                        print("valide")
                         list_moving_poke = []
                         # impossible de faire une deepcopy avec des instance de classe et une copie simple ne suffit pas
                         for poke_selected in liste_personnages_selected :
@@ -140,15 +178,31 @@ def game_loop():
                                 if torche.get_position() == poke.get_position():
                                     poke.select(liste_personnages_selected)
                                     poke.set_sprite()
+                                    # rajouter le nom de ce poke + son number au texte affiché
+                                    poke_text += f"{poke.get_name()}         {poke.get_number()}\n"
+                                    poke_selection_change = True
+
                                 else:
-                                    print("la torche n'est pas de ce coté !")
+                                    bool_prof_chen_text = True
+                                    time_start_affichage_text = pygame.time.get_ticks()
+                                    prof_chen_text = "Sélection impossible !\nLa torche n'est pas de ce coté !"
+
                             else:
-                                bool_text = True
+                                bool_prof_chen_text = True
                                 time_start_affichage_text = pygame.time.get_ticks()
-                                print("Le pokémon ne peut pas être selectionné, il a déjà deux pokémons sélectionnés !")
+                                prof_chen_text = "Sélection impossible !\nIl a déjà 2 pokémons sélectionnés !"
+
                         else:
                             poke.unselect(liste_personnages_selected)
                             poke.set_sprite()
+                            ## enlever le nom de ce poke + son number au texte affiché
+                            poke_regex_search = f"{poke.get_name()}         {poke.get_number()}\n"
+                            poke_text = sub(poke_regex_search, '', poke_text)
+                            # gestion de l'affichage du crossing time
+
+                            poke_selection_change = True
+
+
 
                         # Affichage des poké selected
                         for poke_selected in liste_personnages_selected :
