@@ -30,9 +30,11 @@ bg_menu = pygame.image.load(sprite_directory_path+'\\bg_menu.png')
 fg_jeu = pygame.image.load(sprite_directory_path+'\\front_game.png')
 hub_animal_select = pygame.image.load(sprite_directory_path+'\\hud_animals.png')
 button_valid = pygame.image.load(sprite_directory_path+'\\hud_valid.png')
+prof_chen = pygame.image.load(sprite_directory_path+'\\prof_chen_1.png')
+bubble_text = pygame.image.load(sprite_directory_path+'\\bubble_text.png')
 
-font = pygame.font.Font(None, 240)
-text = font.render("Texte",1,(255,255,255))
+font = pygame.font.Font(None, 15)
+text = font.render("il a déjà 2 pokémons sélectionnés !",1,(0,0,0))
 
 # Creation des personnages/animaux
 pikachu = Personnage(1,"pikachu", sprite_directory_path, 0, x=360, y=630, taille=35)
@@ -57,6 +59,9 @@ hub_animal_rect = hub_animal_select.get_rect(center=(130,60))
 play_rect = button_play.get_rect(center=(640, 640))
 valid_rect = button_valid.get_rect(center=(1200, 50))
 fg_jeu_rect = fg_jeu.get_rect(center=(640, 360))
+text_rect = text.get_rect(center=(1150,510))
+prof_chen_rect = prof_chen.get_rect(center=(1260,600))
+bubble_text_rect = bubble_text.get_rect(center=(1150,520))
 
 running = True
 menu = True
@@ -71,7 +76,25 @@ liste_personnages_selected: list[Personnage] = []
 def game_loop():
     # boucle de la partie
     playing = True
+    bool_text = False
+    time_start_affichage_text = 0
     while playing:
+        screen.blit(bg_jeu, (0, 0))  # Fond de jeu
+        screen.blit(fg_jeu, fg_jeu_rect.topleft)  # Avant-plan positionné
+        screen.blit(button_valid, valid_rect.topleft)  # Affiche le boutton valider
+        screen.blit(hub_animal_select, hub_animal_rect)
+        screen.blit(torche.get_sprite(), torche.get_rect())
+        screen.blit(prof_chen, prof_chen_rect)
+        if bool_text == True and pygame.time.get_ticks() < time_start_affichage_text +4000:
+            screen.blit(bubble_text, bubble_text_rect)
+            screen.blit(text, text_rect)
+        else:
+            bool_text = False
+
+
+        for poke in dico_choix_animaux.values():
+            screen.blit(poke.get_sprite(), poke.get_rect())
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -120,7 +143,8 @@ def game_loop():
                                 else:
                                     print("la torche n'est pas de ce coté !")
                             else:
-                                screen.blit(text, (100, 100))
+                                bool_text = True
+                                time_start_affichage_text = pygame.time.get_ticks()
                                 print("Le pokémon ne peut pas être selectionné, il a déjà deux pokémons sélectionnés !")
                         else:
                             poke.unselect(liste_personnages_selected)
@@ -132,14 +156,7 @@ def game_loop():
 
 
         # Affichage des éléments de jeu
-        screen.blit(bg_jeu, (0, 0))  # Fond de jeu
-        screen.blit(fg_jeu, fg_jeu_rect.topleft)  # Avant-plan positionné
-        screen.blit(button_valid, valid_rect.topleft)  # Affiche le boutton valider
-        screen.blit(hub_animal_select, hub_animal_rect)
-        screen.blit(torche.get_sprite(), torche.get_rect())
 
-        for poke in dico_choix_animaux.values():
-            screen.blit(poke.get_sprite(), poke.get_rect())
 
 
         pygame.display.flip()
