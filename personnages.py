@@ -1,5 +1,6 @@
 # Classe Personnage & Torche
 import pygame
+import time
 
 class Personnage() :
     def __init__(self, number, name, sprite_directory_path, position = 0, x = 0, y = 0, taille= 50):
@@ -8,10 +9,14 @@ class Personnage() :
         self.position = position
         self.selected = 0
         self.taille = taille
+        self.x = x
+        self.x_0 = x
+        self.x_1 = x+770
+        self.y = y
         self.sprite_directory_path = sprite_directory_path
         self.sprite = pygame.image.load(self.sprite_directory_path+'\\'+self.name+'_0.png')
         self.sprite = pygame.transform.scale(self.sprite, (self.taille,self.taille))
-        self.rect = self.sprite.get_rect(center=(x,y))
+        self.rect = self.sprite.get_rect(center=(self.x,self.y))
 
     def get_name(self):
         return self.name
@@ -36,11 +41,21 @@ class Personnage() :
     def set_number(self, new_number):
         self.number = new_number
 
-    def set_position(self, new_position):
-        self.position = new_position
+    def change_position(self):
+        if self.position == 0 :
+            self.set_position(1, end_move=True)
+        else :
+            self.set_position(0, end_move=True)
 
-    def set_sprite(self, selected : bool):
-        if selected == False :
+
+    def set_position(self, new_position : int, end_move : bool =False):
+        self.position = new_position
+        if end_move :
+            self.set_sprite()
+
+
+    def set_sprite(self):
+        if self.selected == 0 :
             if self.position == 0:
                 sprite_extension = '_0.png'
             else :
@@ -65,6 +80,25 @@ class Personnage() :
         # ajouter le code quand le personnage est selectionné
         liste_personnages_selected.remove(self)
         self.selected = 0
+
+    # Fonction de déplacement des personnages
+    def move(self, max_move_time : int):
+        # deplacement sur l'axe des abcsisse des personnages
+        # 770 pck déjà graphiquement, c'est bien, en plus c'est diivisible par 1,2,5 et 7.
+        pas = 770 / max_move_time
+        if self.position == 0 :
+            self.x += pas
+            self.rect = self.sprite.get_rect(center=(self.x,self.y))
+            if self.x != self.x_1 :
+                return False
+            return True
+        elif self.position == 1 :
+            self.x -= pas
+            self.rect = self.sprite.get_rect(center=(self.x,self.y))
+            if self.x != self.x_0 :
+                return False
+            return True
+        # leur temps de déplacement dépend de leur "self.number"
 
 
 class Torche() :

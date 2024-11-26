@@ -1,7 +1,10 @@
+import time
+
 import pygame
 import logique
 from personnages import Personnage, Torche
 import os
+from copy import deepcopy
 
 # creation du project_path & du sprite_path
 project_path = os.getcwd()
@@ -31,9 +34,9 @@ hub_animal_select = pygame.image.load(sprite_directory_path+'\\hud_animals.png')
 button_valid = pygame.image.load(sprite_directory_path+'\\hud_valid.png')
 
 # Creation des personnages/animaux
-poussifeu = Personnage(2,"poussifeu", sprite_directory_path, 0, x=380, y=620, taille=50)
-pikachu = Personnage(1,"pikachu", sprite_directory_path, 0, x=340, y=620, taille=50)
-lokhlass = Personnage(5,"lokhlass", sprite_directory_path, 0, x=280, y=620, taille=100)
+pikachu = Personnage(1,"pikachu", sprite_directory_path, 0, x=380, y=630, taille=35)
+poussifeu = Personnage(2,"poussifeu", sprite_directory_path, 0, x=340, y=610, taille=85)
+lokhlass = Personnage(5,"lokhlass", sprite_directory_path, 0, x=280, y=620, taille=120)
 ronflex = Personnage(7,"ronflex", sprite_directory_path, 0, x=180, y=595, taille=150)
 
 
@@ -76,18 +79,41 @@ def game_loop():
                 if valid_rect.collidepoint(event.pos):  # Vérifie si le bouton "valider" est cliqué
                     if len(liste_personnages_selected) > 0:
                         print("valide")
+                        list_moving_poke = []
+                        # impossible de faire une deepcopy avec des instance de classe et une copie simple ne suffit pas
+                        for poke_selected in liste_personnages_selected :
+                            list_moving_poke.append(poke_selected)
+
+                        list_move_time =[]
+                        for poke_selected in list_moving_poke:
+                            list_move_time.append(poke_selected.get_number())
+                        max_move_time = max(list_move_time)
+
+                        # deplacement des pokemon, rajouter la notion de temporalité !!!! (en fonction de la var max_move_time)
+                        # j'ai essayé des trucs dans la methode move de la classe Personnage,
+                        # mais il faut faire en sorte de faire un poke.move() par frame dans la boucle while
+                        move_finished = False
+                        while not move_finished :
+                            for moving_poke in list_moving_poke:
+                                # le code est fait pour que les deux pokemon arrivent dans la même itération de boucle while
+                                move_finished = moving_poke.move(max_move_time=max_move_time)
+
+                        for moving_poke in list_moving_poke :
+                            moving_poke.unselect(liste_personnages_selected)
+                            moving_poke.change_position()
+
 
                 for poke in dico_choix_animaux.values() :
                     if poke.get_rect().collidepoint(event.pos) :
                         if poke.get_selected() == 0:
                             if len(liste_personnages_selected) < 2:
                                 poke.select(liste_personnages_selected)
-                                poke.set_sprite(selected=True)
+                                poke.set_sprite()
                             else:
                                 print("Le pokémon ne peut pas être selectionné, il a déjà deux pokémons sélectionnés !")
                         else:
                             poke.unselect(liste_personnages_selected)
-                            poke.set_sprite(selected=False)
+                            poke.set_sprite()
 
                         # Affichage des poké selected
                         for poke_selected in liste_personnages_selected :
