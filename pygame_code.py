@@ -43,7 +43,8 @@ grey_filter_end_game.set_alpha(128)
 you_win = pygame.image.load(sprite_directory_path+'\\you_win.png')
 game_over = pygame.image.load(sprite_directory_path+'\\game_over.png')
 
-font = pygame.font.Font(None, 15)
+font_chen = pygame.font.Font(None, 15)
+font_poke = pygame.font.Font(None, 20)
 
 
 # Creation des personnages/animaux
@@ -131,7 +132,7 @@ def game_loop():
 
         # Affichage texte : poke_selected & temps de parcours
         # definition de la coord y de la premiere ligne
-        y = 60
+        y = 50
         if poke_selection_change :
             if max_move_time !=0 :
                 poke_text += f"Current crossing time : {current_crossing_time} (+{max_move_time})"
@@ -144,10 +145,10 @@ def game_loop():
 
         poke_lines = poke_text.splitlines()
         for poke_line in poke_lines:
-            printed_line = font.render(poke_line, 1, (255, 255, 255))
+            printed_line = font_poke.render(poke_line, 1, (255, 255, 255))
             printed_line_rect = printed_line.get_rect(topleft=(50, y))
             screen.blit(printed_line, printed_line_rect)
-            y += 10
+            y += 15
 
         # Affichage texte professeur Chen
         if bool_prof_chen_text == True and pygame.time.get_ticks() < time_start_affichage_text +4000:
@@ -158,7 +159,7 @@ def game_loop():
             y = 510
             prof_chen_lines = prof_chen_text.splitlines()
             for prof_chen_line in prof_chen_lines :
-                printed_line = font.render(prof_chen_line, 1, (0, 0, 0))
+                printed_line = font_chen.render(prof_chen_line, 1, (0, 0, 0))
                 printed_line_rect = printed_line.get_rect(center=(1150, y))
                 screen.blit(printed_line, printed_line_rect)
                 y += 10
