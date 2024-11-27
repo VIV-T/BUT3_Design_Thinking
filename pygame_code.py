@@ -5,7 +5,7 @@ import logique
 from personnages import Personnage, Torche
 import os
 # utilse pour les regex
-from re import sub, match
+from re import sub,search
 
 # creation du project_path & du sprite_path
 project_path = os.getcwd()
@@ -73,6 +73,8 @@ torche = Torche(sprite_directory_path, x=390, y = 615)
 temps_tot = 0
 liste_personnages_selected: list[Personnage] = []
 
+
+
 def game_loop():
     # boucle de la partie
     playing = True
@@ -83,6 +85,8 @@ def game_loop():
     poke_text = ""
     poke_lines = poke_text.splitlines()
     poke_selection_change = True
+    crossing_bridge = False
+    max_move_time = 0
     # Répliques du prof Chen
     bool_prof_chen_text = True
     time_start_affichage_text = 0
@@ -101,11 +105,14 @@ def game_loop():
         # definition de la coord y de la premiere ligne
         y = 60
         if poke_selection_change :
-            try :
+            if max_move_time !=0 :
                 poke_text += f"Current crossing time : {current_crossing_time} (+{max_move_time})"
-            except :
+            else :
                 poke_text += f"Current crossing time : {current_crossing_time}"
             poke_selection_change = False
+        elif crossing_bridge :
+            poke_text = f"Current crossing time : {current_crossing_time}"
+            crossing_bridge = False
 
         poke_lines = poke_text.splitlines()
         for poke_line in poke_lines:
@@ -171,6 +178,11 @@ def game_loop():
                         else:
                             torche.set_position(0)
 
+                        # Maj du current_crossing_time
+                        current_crossing_time += max_move_time
+                        crossing_bridge = True
+
+
                 for poke in dico_choix_animaux.values() :
                     if poke.get_rect().collidepoint(event.pos) :
                         if poke.get_selected() == 0:
@@ -178,6 +190,23 @@ def game_loop():
                                 if torche.get_position() == poke.get_position():
                                     poke.select(liste_personnages_selected)
                                     poke.set_sprite()
+
+                                    # obtention de la valeur max de crossing time
+                                    list_move_time = []
+                                    for poke_selected in liste_personnages_selected:
+                                        list_move_time.append(poke_selected.get_number())
+                                    if len(list_move_time) == 0:
+                                        max_move_time = 0
+                                    else:
+                                        max_move_time = max(list_move_time)
+
+                                    # gestion du crossing_time
+                                    if search(f"Current crossing time : {current_crossing_time} \(\+[1-9]+\)",
+                                              poke_text):
+                                        pattern = f"Current crossing time : {current_crossing_time} \(\+[1-9]+\)"
+                                    elif search(f"Current crossing time : {current_crossing_time}", poke_text):
+                                        pattern = f"Current crossing time : {current_crossing_time}"
+                                    poke_text = sub(pattern, '', poke_text)
                                     # rajouter le nom de ce poke + son number au texte affiché
                                     poke_text += f"{poke.get_name()}         {poke.get_number()}\n"
                                     poke_selection_change = True
@@ -195,12 +224,27 @@ def game_loop():
                         else:
                             poke.unselect(liste_personnages_selected)
                             poke.set_sprite()
+
+                            # obtention de la valeur max de crossing time
+                            list_move_time = []
+                            for poke_selected in liste_personnages_selected:
+                                list_move_time.append(poke_selected.get_number())
+                            if len(list_move_time) == 0 :
+                                max_move_time = 0
+                            else :
+                                max_move_time = max(list_move_time)
+
+                            # gestion de l'affichage du crossing time
+                            if search(f"Current crossing time : {current_crossing_time} \(\+[1-9]+\)", poke_text):
+                                pattern = f"Current crossing time : {current_crossing_time} \(\+[1-9]+\)"
+                            elif search(f"Current crossing time : {current_crossing_time}", poke_text) :
+                                pattern = f"Current crossing time : {current_crossing_time}"
+                            poke_text = sub(pattern, '', poke_text)
+                            poke_selection_change = True
                             ## enlever le nom de ce poke + son number au texte affiché
                             poke_regex_search = f"{poke.get_name()}         {poke.get_number()}\n"
                             poke_text = sub(poke_regex_search, '', poke_text)
-                            # gestion de l'affichage du crossing time
 
-                            poke_selection_change = True
 
 
 
