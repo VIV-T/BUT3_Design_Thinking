@@ -39,7 +39,7 @@ bubble_text = pygame.image.load(sprite_directory_path+'\\bubble_text.png')
 grey_filter_end_game = pygame.Surface(screen.get_size())  # width et height sont les dimensions de votre écran
 grey_filter_end_game.fill((75, 75, 75))  # couleur marron en RGB
 grey_filter_end_game = grey_filter_end_game.convert_alpha()
-grey_filter_end_game.set_alpha(128)
+grey_filter_end_game.set_alpha(180)
 you_win = pygame.image.load(sprite_directory_path+'\\you_win.png')
 game_over = pygame.image.load(sprite_directory_path+'\\game_over.png')
 
@@ -66,8 +66,8 @@ button_valid = pygame.transform.scale(button_valid, (75,75))
 button_valid_clicked = pygame.transform.scale(button_valid_clicked, (75,75))
 hub_animal_select = pygame.transform.scale(hub_animal_select, (250,100))
 fg_jeu = pygame.transform.scale(fg_jeu, (1280, 720))
-you_win = pygame.transform.scale(you_win, (200, 100))
-game_over = pygame.transform.scale(game_over, (200, 100))
+you_win = pygame.transform.scale(you_win, (300, 150))
+game_over = pygame.transform.scale(game_over, (300, 150))
 
 # Position
 hub_animal_rect = hub_animal_select.get_rect(center=(130,60))
